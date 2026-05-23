@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SATUI.Tests/SATUI.Tests.csproj" />
+  <Project Path="SATUI/SATUI.csproj" />
+</Solution>

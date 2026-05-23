@@ -1,0 +1,67 @@
+<Window x:Class="SATUI.Views.ConnectionErrorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Connection Problem"
+        Width="520" SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#1E1E2E">
+
+    <StackPanel Margin="28">
+
+        <!-- Header -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+            <TextBlock Text="📡" FontSize="36" VerticalAlignment="Center" Margin="0,0,12,0"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Signal Lost" FontSize="20" FontWeight="SemiBold" Foreground="White"/>
+                <TextBlock Text="Could not connect to the Satellite Access Terminal."
+                           FontSize="13" Foreground="#AAAACC"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Instructions -->
+        <Border Background="#2A2A3E" CornerRadius="6" Padding="14,10" Margin="0,0,0,20">
+            <TextBlock FontSize="13" Foreground="#CCCCEE" TextWrapping="Wrap" LineHeight="20">
+                <Run FontWeight="SemiBold">Please verify the SAT device is powered on</Run>
+                <Run> and connected to the network, then click </Run>
+                <Run FontWeight="SemiBold">Retry</Run>
+                <Run>. If you need to connect to a different unit, update the URL below.</Run>
+            </TextBlock>
+        </Border>
+
+        <!-- Attempted URL (read-only reference) -->
+        <TextBlock Text="LAST ATTEMPTED URL" FontSize="11" FontWeight="SemiBold"
+                   Foreground="#6C63FF" Margin="0,0,0,4"/>
+        <TextBox Text="{Binding AttemptedUrl, Mode=OneTime}"
+                 IsReadOnly="True"
+                 FontSize="12" Padding="8,6"
+                 Background="#12121E" Foreground="#888899"
+                 BorderBrush="#333355" BorderThickness="1"
+                 Margin="0,0,0,16"/>
+
+        <!-- Editable URL -->
+        <TextBlock Text="URL" FontSize="11" FontWeight="SemiBold"
+                   Foreground="#6C63FF" Margin="0,0,0,4"/>
+        <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"
+                 FontSize="13" Padding="8,6"
+                 Background="#2A2A3E" Foreground="White"
+                 CaretBrush="White" BorderBrush="#555577" BorderThickness="1"/>
+
+        <!-- Validation error -->
+        <TextBlock Text="{Binding UrlValidationError}"
+                   FontSize="12" Foreground="#FF6B6B"
+                   Margin="0,4,0,0"
+                   Visibility="{Binding HasUrlValidationError, Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Buttons -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
+            <Button Content="Cancel" Command="{Binding CancelCommand}"
+                    Width="90" Height="34" Margin="0,0,10,0"
+                    Style="{StaticResource SecondaryButton}"/>
+            <Button Content="⟳  Retry" Command="{Binding RetryCommand}"
+                    Width="110" Height="34"
+                    Style="{StaticResource PrimaryButton}"/>
+        </StackPanel>
+
+    </StackPanel>
+</Window>
