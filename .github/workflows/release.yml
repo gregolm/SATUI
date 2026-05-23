@@ -27,7 +27,7 @@ jobs:
       - name: Build and test
         run: |
           dotnet build --no-restore -c Release
-          dotnet test --no-build -c Release
+          dotnet test SATUI.Tests/SATUI.Tests.csproj --no-build -c Release
 
       - name: Publish self-contained EXE
         run: >
