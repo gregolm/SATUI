@@ -29,16 +29,27 @@ jobs:
           dotnet build --no-restore -c Release
           dotnet test SATUI.Tests/SATUI.Tests.csproj --no-build -c Release
 
-      - name: Publish self-contained EXE
+      - name: Publish self-contained release
         run: >
           dotnet publish SATUI/SATUI.csproj
           -c Release
           -r win-x64
-          --self-contained true
-          -p:PublishSingleFile=true
+          --self-contained
           -p:DebugType=none
           -p:DebugSymbols=false
+          -p:TrimMode=link
+          -p:EnableTrimAnalyzer=false
           -o publish/
+
+      - name: Prepare release assets
+        shell: powershell
+        run: |
+          # Create a directory for release artifacts
+          New-Item -ItemType Directory -Path "release_artifacts" -Force | Out-Null
+          # Copy the main executable
+          Copy-Item "publish/SATUI.exe" -Destination "release_artifacts/"
+          # Create a zip file with all dependencies
+          Compress-Archive -Path "publish/*" -DestinationPath "release_artifacts/SATUI-win-x64.zip" -Force
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -48,4 +59,6 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
-          files: publish/SATUI.exe
+          files: |
+            release_artifacts/SATUI.exe
+            release_artifacts/SATUI-win-x64.zip
