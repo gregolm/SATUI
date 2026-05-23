@@ -44,9 +44,12 @@ jobs:
       - name: Build MSIX package
         shell: powershell
         run: |
-          # Build MSIX using the Build-MSIX script
-          & .\Build-MSIX.ps1 -PublishDir "publish" -OutputDir "release_artifacts" -Sign
-          
+          # Create release artifacts directory
+          New-Item -ItemType Directory -Path "release_artifacts" -Force | Out-Null
+           
+          # Build MSIX using the Build-MSIX script (no signing yet)
+          & .\Build-MSIX.ps1 -PublishDir "publish" -OutputDir "release_artifacts"
+           
           # Verify MSIX was created
           $msix = Get-Item release_artifacts/*.msix -ErrorAction SilentlyContinue
           if ($msix) {
