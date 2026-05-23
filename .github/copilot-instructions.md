@@ -60,6 +60,29 @@ void OnSaved(AppSettings settings)
 }
 ```
 
+## TDD Workflow
+
+Follow test-driven development for all changes:
+
+1. **Write a failing test first.** Add the test to the appropriate file under `SATUI.Tests/` (mirror the `SATUI/` structure). Run it to confirm it fails for the right reason.
+2. **Write the minimum production code** to make the test pass.
+3. **Refactor.** Once green, clean up duplication, improve naming, and simplify logic — keeping all tests passing throughout.
+4. **Verify before finishing.** Always run `dotnet test` and confirm zero failures before considering a task done. Never leave a prompt with failing tests.
+
+### What to test
+
+- Every new public method or property on a ViewModel or Service needs at least one test.
+- Test behaviour, not implementation: assert on events fired, property values, and return values — not on internal state or private methods.
+- When a bug is fixed, add a regression test that would have caught it.
+
+### When to refactor
+
+Refactor opportunistically after going green:
+- Extract a private helper if the same logic appears in two or more tests or production methods.
+- Replace magic strings/numbers with named constants or parameters.
+- Simplify branching (e.g., guard clauses instead of nested `if`).
+- Keep `CreateSut()` factory methods up to date — if a constructor signature changes, update the factory rather than duplicating setup across tests.
+
 ## Key Conventions
 
 ### CommunityToolkit.Mvvm source generation
