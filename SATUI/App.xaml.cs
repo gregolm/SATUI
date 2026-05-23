@@ -26,6 +26,9 @@ public partial class App : Application
 
         _services = services.BuildServiceProvider();
 
+        // Prevent WPF from shutting down when the license dialog closes before MainWindow opens
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
         var themeService = _services.GetRequiredService<IThemeService>();
         ApplyTheme(themeService.IsDarkMode);
         themeService.ThemeChanged += (_, _) => ApplyTheme(themeService.IsDarkMode);
@@ -38,6 +41,7 @@ public partial class App : Application
         }
 
         var mainWindow = _services.GetRequiredService<MainWindow>();
+        mainWindow.Closed += (_, _) => Shutdown();
         mainWindow.Show();
     }
 
