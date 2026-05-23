@@ -35,6 +35,12 @@
                    Margin="0,4,0,0" TextWrapping="Wrap"
                    Visibility="{Binding HasUrlHint, Converter={StaticResource BoolToVisibility}}"/>
 
+        <!-- Info note about changing URL anytime -->
+        <TextBlock FontSize="12" Foreground="{DynamicResource AppTextMuted}"
+                   Margin="0,16,0,0" TextWrapping="Wrap" LineHeight="18">
+            <Run>You can change this URL at any time by clicking the URL in the header bar or the ⚙ icon.</Run>
+        </TextBlock>
+
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
             <Button Content="{Binding SecondaryButtonText}" Command="{Binding CancelCommand}"
