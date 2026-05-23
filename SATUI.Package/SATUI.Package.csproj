@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AppxPackage>true</AppxPackage>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+    <AppxPackageDir>$(MSBuildProjectDirectory)\AppPackages\</AppxPackageDir>
+    <AppxPackageName>SATUI</AppxPackageName>
+    <AppxPackageDisplayName>SATUI</AppxPackageDisplayName>
+    <PackageDisplayName>SATUI</PackageDisplayName>
+    <AppxVersionNumber>0.0.2.0</AppxVersionNumber>
+    <AppxSigningEnabled>false</AppxSigningEnabled>
+    <GenerateTestArtifacts>false</GenerateTestArtifacts>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SATUI\SATUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AppxManifest Include="AppxManifest.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**" />
+  </ItemGroup>
+
+  <!-- Copy the published app files into the package -->
+  <Target Name="CopyPublishOutput" BeforeTargets="CreateAppxPackage">
+    <ItemGroup>
+      <PublishFiles Include="$(PublishDir)**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PublishFiles)" DestinationFolder="$(AppxPackageDir)%(PublishFiles.RecursiveDir)" />
+  </Target>
+
+</Project>

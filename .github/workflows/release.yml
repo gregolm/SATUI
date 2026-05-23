@@ -41,15 +41,53 @@ jobs:
           -p:EnableTrimAnalyzer=false
           -o publish/
 
-      - name: Prepare release assets
+      - name: Build MSIX package
         shell: powershell
         run: |
-          # Create a directory for release artifacts
-          New-Item -ItemType Directory -Path "release_artifacts" -Force | Out-Null
-          # Copy the main executable
-          Copy-Item "publish/SATUI.exe" -Destination "release_artifacts/"
-          # Create a zip file with all dependencies
-          Compress-Archive -Path "publish/*" -DestinationPath "release_artifacts/SATUI-win-x64.zip" -Force
+          # Build MSIX using the Build-MSIX script
+          & .\Build-MSIX.ps1 -PublishDir "publish" -OutputDir "release_artifacts" -Sign
+          
+          # Verify MSIX was created
+          $msix = Get-Item release_artifacts/*.msix -ErrorAction SilentlyContinue
+          if ($msix) {
+            Write-Host "✓ MSIX package created: $($msix.Name) ($([math]::Round($msix.Length/1MB, 2)) MB)"
+          } else {
+            Write-Error "MSIX package not found!"
+            exit 1
+          }
+
+      - name: Copy icon to published folder
+        shell: powershell
+        run: |
+          Copy-Item "SATUI/Resources/satellite.ico" -Destination "publish/"
+
+      - name: Create installer package
+        shell: powershell
+        run: |
+          # Create a temporary directory for the installer package
+          $tempDir = New-Item -ItemType Directory -Path "temp_installer" -Force
+          
+          # Copy publish folder to temp
+          Copy-Item "publish/*" -Destination $tempDir -Recurse -Force
+          
+          # Copy install script to temp
+          Copy-Item "Install-SATUI.ps1" -Destination $tempDir
+          
+          # Create a wrapper batch file that extracts and runs the installer
+          $batchContent = @"
+@echo off
+setlocal enabledelayedexpansion
+cd /d "%~dp0"
+powershell -ExecutionPolicy Bypass -File "Install-SATUI.ps1" -InstallPath "%ProgramFiles%\SATUI"
+pause
+"@
+          Set-Content -Path "$tempDir\Install.bat" -Value $batchContent
+          
+          # Create ZIP with installer
+          Compress-Archive -Path "$tempDir/*" -DestinationPath "release_artifacts/SATUI-Setup.zip" -Force
+          
+          # Also create the full folder zip as portable fallback
+          Compress-Archive -Path "publish/*" -DestinationPath "release_artifacts/SATUI-win-x64-portable.zip" -Force
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -61,5 +99,6 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            release_artifacts/SATUI.exe
-            release_artifacts/SATUI-win-x64.zip
+            release_artifacts/*.msix
+            release_artifacts/SATUI-Setup.zip
+            release_artifacts/SATUI-win-x64-portable.zip
