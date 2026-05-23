@@ -1,10 +1,3 @@
-﻿namespace SATUI.Tests;
-
-public class UnitTest1
-{
-    [Fact]
-    public void Test1()
-    {
-
-    }
-}
+// This file is intentionally left empty.
+// Tests live in ViewModels/ and Services/ subdirectories.
+namespace SATUI.Tests;

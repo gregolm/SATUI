@@ -11,10 +11,16 @@ public partial class MainViewModel : ObservableObject
     private readonly IConnectivityService _connectivityService;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(WindowTitle))]
     private string _currentUrl = string.Empty;
 
     [ObservableProperty]
     private bool _isLoading;
+
+    public string WindowTitle =>
+        string.IsNullOrWhiteSpace(CurrentUrl)
+            ? "SATUI — Satellite Access Terminal"
+            : $"SATUI — {CurrentUrl}";
 
     /// <summary>Raised when WebView2 should navigate to a URL.</summary>
     public event Action<string>? NavigationRequested;
