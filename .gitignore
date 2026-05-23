@@ -39,3 +39,9 @@ coverage/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+## Playwright MCP artifacts
+.playwright-mcp/
+
+## Scratch screenshots / temp images at repo root
+*.png

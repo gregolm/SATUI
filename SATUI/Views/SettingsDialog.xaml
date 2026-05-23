@@ -6,24 +6,24 @@
         Width="480" SizeToContent="Height"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Background="#1E1E2E">
+        Background="{DynamicResource AppBackground}">
 
     <StackPanel Margin="28">
 
         <!-- Header -->
         <TextBlock Text="⚙  Settings" FontSize="20" FontWeight="SemiBold"
-                   Foreground="White" Margin="0,0,0,20"/>
+                   Foreground="{DynamicResource AppText}" Margin="0,0,0,20"/>
 
         <!-- URL field -->
-        <TextBlock Text="SAT URL" FontSize="13" Foreground="#AAAACC" Margin="0,0,0,6"/>
+        <TextBlock Text="SAT URL" FontSize="13" Foreground="{DynamicResource AppTextMuted}" Margin="0,0,0,6"/>
         <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"
                  FontSize="13" Padding="8,6"
-                 Background="#2A2A3E" Foreground="White"
-                 CaretBrush="White" BorderBrush="#555577" BorderThickness="1"/>
+                 Background="{DynamicResource AppSurface}" Foreground="{DynamicResource AppText}"
+                 CaretBrush="{DynamicResource AppText}" BorderBrush="{DynamicResource AppBorder}" BorderThickness="1"/>
 
         <!-- Validation error -->
         <TextBlock Text="{Binding UrlValidationError}"
-                   FontSize="12" Foreground="#FF6B6B"
+                   FontSize="12" Foreground="{DynamicResource AppError}"
                    Margin="0,4,0,0"
                    Visibility="{Binding HasUrlValidationError, Converter={StaticResource BoolToVisibility}}"/>
 
