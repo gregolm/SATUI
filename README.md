@@ -1,5 +1,8 @@
 # 📡 SATUI — Satellite Access Terminal User Interface
 
+[![CI](https://github.com/gregolm/SATUI/actions/workflows/ci.yml/badge.svg)](https://github.com/gregolm/SATUI/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/gregolm/SATUI?label=release&color=6C63FF)](https://github.com/gregolm/SATUI/releases/latest)
+
 A Windows 11 desktop application built with .NET 10 (WPF) that embeds web content from a configured satellite access terminal URL, providing a clean kiosk-style interface for satellite radio communication systems.
 
 ## Features
