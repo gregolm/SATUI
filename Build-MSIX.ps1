@@ -4,6 +4,7 @@
 param(
     [string]$PublishDir = "publish",
     [string]$OutputDir = "MSIX",
+    [string]$Version = "0.0.0",
     [switch]$Sign = $false
 )
 
@@ -68,10 +69,14 @@ $contentTypesPath = Join-Path $stagingDir "[Content_Types].xml"
 [System.IO.File]::WriteAllText($contentTypesPath, $contentTypes)
 Write-Info "Created [Content_Types].xml"
 
-# Copy AppxManifest.xml
+# Copy AppxManifest.xml and inject the current version
 if (Test-Path "SATUI.Package\AppxManifest.xml") {
-    Copy-Item "SATUI.Package\AppxManifest.xml" -Destination "$stagingDir\AppxManifest.xml" -Force
-    Write-Info "Copied AppxManifest.xml"
+    $manifestContent = Get-Content "SATUI.Package\AppxManifest.xml" -Raw
+    # Ensure 4-part version (e.g. 0.0.3 -> 0.0.3.0)
+    $fourPartVersion = if ($Version -match '^\d+\.\d+\.\d+$') { "$Version.0" } else { $Version }
+    $manifestContent = $manifestContent -replace 'Version="[\d\.]+"', "Version=""$fourPartVersion"""
+    [System.IO.File]::WriteAllText("$stagingDir\AppxManifest.xml", $manifestContent)
+    Write-Info "Copied AppxManifest.xml (version: $fourPartVersion)"
 } else {
     Write-Error "AppxManifest.xml not found in SATUI.Package directory"
     exit 1
@@ -144,7 +149,7 @@ $blockMapPath = Join-Path $stagingDir "AppxBlockMap.xml"
 Write-Info "Created AppxBlockMap.xml with $($blockMapEntries.Count) file entries"
 
 # Create the MSIX as a ZIP file
-$packagePath = "$OutputDir\SATUI-0.0.2.msix"
+$packagePath = "$OutputDir\SATUI-$Version.msix"
 if (Test-Path $packagePath) {
     Remove-Item $packagePath -Force
 }

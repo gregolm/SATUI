@@ -45,7 +45,8 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path "release_artifacts" -Force | Out-Null
-          & .\Build-MSIX.ps1 -PublishDir "publish" -OutputDir "release_artifacts"
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          & .\Build-MSIX.ps1 -PublishDir "publish" -OutputDir "release_artifacts" -Version $version
           $msix = Get-Item release_artifacts/*.msix -ErrorAction SilentlyContinue
           if ($msix) {
             Write-Host "MSIX package created: $($msix.Name) ($([math]::Round($msix.Length/1MB, 2)) MB)"
