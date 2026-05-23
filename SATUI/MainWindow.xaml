@@ -24,20 +24,42 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Toolbar -->
-        <ToolBar Grid.Row="0" Height="36" Background="{DynamicResource AppBackground}" Foreground="{DynamicResource AppText}">
-            <TextBlock Text="📡 SATUI" FontSize="14" FontWeight="SemiBold"
-                       Foreground="{DynamicResource AppText}" VerticalAlignment="Center" Margin="4,0,12,0"/>
-            <Separator/>
-            <TextBlock Text="{Binding CurrentUrl}" FontSize="12" Foreground="{DynamicResource AppTextMuted}"
-                       VerticalAlignment="Center" Margin="4,0" MaxWidth="600"
-                       TextTrimming="CharacterEllipsis"/>
-            <Separator/>
-            <Button Content="⟳ Reload" Command="{Binding NavigateCommand}"
-                    ToolTip="Reload (Ctrl+R)" Margin="4,0"/>
-            <Button Content="⚙ Settings" Command="{Binding OpenSettingsCommand}"
-                    ToolTip="Settings (Alt+S)" Margin="4,0"/>
-        </ToolBar>
+        <!-- Header bar -->
+        <Border Grid.Row="0" Height="36" Background="{DynamicResource AppBackground}"
+                BorderBrush="{DynamicResource AppBorder}" BorderThickness="0,0,0,1">
+            <DockPanel VerticalAlignment="Stretch" Margin="4,0">
+
+                <!-- App logo (left) -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="📡 SATUI" FontSize="14" FontWeight="SemiBold"
+                           Foreground="{DynamicResource AppText}"
+                           VerticalAlignment="Center" Margin="4,0,8,0"/>
+                <Rectangle DockPanel.Dock="Left" Width="1" Fill="{DynamicResource AppBorder}"
+                           VerticalAlignment="Stretch" Margin="0,6"/>
+
+                <!-- Gear icon (far right) -->
+                <Button DockPanel.Dock="Right"
+                        Content="⚙" Command="{Binding OpenSettingsCommand}"
+                        Style="{StaticResource HeaderIconButton}"
+                        ToolTip="Settings (Alt+S)" Width="32"/>
+
+                <!-- Reload button (to the left of the gear) -->
+                <Button DockPanel.Dock="Right"
+                        Content="⟳" Command="{Binding NavigateCommand}"
+                        Style="{StaticResource HeaderIconButton}"
+                        ToolTip="Reload (Ctrl+R)" Width="32" Margin="0,0,2,0"/>
+
+                <Rectangle DockPanel.Dock="Right" Width="1" Fill="{DynamicResource AppBorder}"
+                           VerticalAlignment="Stretch" Margin="4,6"/>
+
+                <!-- Clickable URL (fills remaining space) -->
+                <Button Content="{Binding CurrentUrl}"
+                        Command="{Binding OpenSettingsCommand}"
+                        Style="{StaticResource HeaderUrlButton}"
+                        ToolTip="Click to configure URL"/>
+
+            </DockPanel>
+        </Border>
 
         <!-- WebView2 content (fills row; error/loading shown via dialogs/overlay) -->
         <wv2:WebView2 x:Name="WebView" Grid.Row="1"/>

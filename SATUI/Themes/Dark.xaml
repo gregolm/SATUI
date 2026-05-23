@@ -27,6 +27,69 @@
     <!-- Semi-transparent loading overlay -->
     <SolidColorBrush x:Key="AppOverlay"       Color="#CC1E1E2E"/>
 
+    <!-- Header toolbar icon button (gear, reload) -->
+    <Style x:Key="HeaderIconButton" TargetType="Button">
+        <Setter Property="Background"       Value="Transparent"/>
+        <Setter Property="Foreground"       Value="{DynamicResource AppTextMuted}"/>
+        <Setter Property="BorderThickness"  Value="0"/>
+        <Setter Property="Padding"          Value="4"/>
+        <Setter Property="FontSize"         Value="16"/>
+        <Setter Property="Cursor"           Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="4"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource AppSurface}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource AppText}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource AppSurfaceDark}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Header clickable URL button -->
+    <Style x:Key="HeaderUrlButton" TargetType="Button">
+        <Setter Property="Background"                 Value="Transparent"/>
+        <Setter Property="Foreground"                 Value="{DynamicResource AppTextMuted}"/>
+        <Setter Property="BorderThickness"            Value="0"/>
+        <Setter Property="Padding"                    Value="6,0"/>
+        <Setter Property="FontSize"                   Value="12"/>
+        <Setter Property="Cursor"                     Value="Hand"/>
+        <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <TextBlock x:Name="Txt"
+                                   Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Txt" Property="Foreground" Value="{DynamicResource AppText}"/>
+                            <Setter TargetName="Txt" Property="TextDecorations" Value="Underline"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Primary action button (accent-filled) -->
     <Style x:Key="PrimaryButton" TargetType="Button">
         <Setter Property="Background"       Value="{DynamicResource AppAccent}"/>
