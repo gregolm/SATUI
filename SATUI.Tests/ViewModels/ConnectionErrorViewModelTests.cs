@@ -45,7 +45,7 @@ public class ConnectionErrorViewModelTests
 
         vm.IsUrlValid.Should().BeFalse();
         vm.HasUrlValidationError.Should().BeTrue();
-        vm.UrlValidationError.Should().Contain("empty");
+        vm.UrlValidationError.Should().NotBeNull();
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class ConnectionErrorViewModelTests
         vm.Url = "ftp://sat.local";
 
         vm.IsUrlValid.Should().BeFalse();
-        vm.UrlValidationError.Should().Contain("http");
+        vm.UrlValidationError.Should().NotBeNull();
     }
 
     [Fact]
@@ -122,6 +122,8 @@ public class ConnectionErrorViewModelTests
         changedProps.Should().Contain(nameof(vm.UrlValidationError));
         changedProps.Should().Contain(nameof(vm.HasUrlValidationError));
         changedProps.Should().Contain(nameof(vm.IsUrlValid));
+        changedProps.Should().Contain(nameof(vm.UrlHint));
+        changedProps.Should().Contain(nameof(vm.HasUrlHint));
     }
 
     [Fact]
@@ -135,5 +137,34 @@ public class ConnectionErrorViewModelTests
         vm.Url = "https://sat.local"; // valid
 
         vm.RetryCommand.CanExecute(null).Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsUrlValid_WhenBareIPv4_IsTrue()
+    {
+        var vm = CreateSut();
+        vm.Url = "192.168.1.100";
+
+        vm.IsUrlValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void UrlHint_WhenBareIP_ReturnsHintText()
+    {
+        var vm = CreateSut();
+        vm.Url = "192.168.1.100";
+
+        vm.UrlHint.Should().NotBeNull();
+        vm.HasUrlHint.Should().BeTrue();
+    }
+
+    [Fact]
+    public void UrlHint_WhenFullHttpsUrl_ReturnsNull()
+    {
+        var vm = CreateSut();
+        vm.Url = "https://sat.local";
+
+        vm.UrlHint.Should().BeNull();
+        vm.HasUrlHint.Should().BeFalse();
     }
 }

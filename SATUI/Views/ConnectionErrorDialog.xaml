@@ -30,7 +30,7 @@
         </Border>
 
         <!-- Attempted URL (read-only reference) -->
-        <TextBlock Text="LAST ATTEMPTED URL" FontSize="11" FontWeight="SemiBold"
+        <TextBlock Text="LAST ATTEMPTED ADDRESS" FontSize="11" FontWeight="SemiBold"
                    Foreground="{DynamicResource AppAccent}" Margin="0,0,0,4"/>
         <TextBox Text="{Binding AttemptedUrl, Mode=OneTime}"
                  IsReadOnly="True"
@@ -40,7 +40,7 @@
                  Margin="0,0,0,16"/>
 
         <!-- Editable URL -->
-        <TextBlock Text="URL" FontSize="11" FontWeight="SemiBold"
+        <TextBlock Text="IP ADDRESS OR URL" FontSize="11" FontWeight="SemiBold"
                    Foreground="{DynamicResource AppAccent}" Margin="0,0,0,4"/>
         <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"
                  FontSize="13" Padding="8,6"
@@ -52,6 +52,12 @@
                    FontSize="12" Foreground="{DynamicResource AppError}"
                    Margin="0,4,0,0"
                    Visibility="{Binding HasUrlValidationError, Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Hint (shown when no protocol prefix is detected) -->
+        <TextBlock Text="{Binding UrlHint}"
+                   FontSize="12" Foreground="{DynamicResource AppAccent}"
+                   Margin="0,4,0,0" TextWrapping="Wrap"
+                   Visibility="{Binding HasUrlHint, Converter={StaticResource BoolToVisibility}}"/>
 
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">

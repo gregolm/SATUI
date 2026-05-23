@@ -176,5 +176,55 @@ public class MainViewModelTests
 
         fired.Should().BeTrue();
     }
+
+    [Fact]
+    public async Task NavigateAsync_WhenFirstCandidateUnreachableButSecondReachable_NavigatesToSecond()
+    {
+        var settingsMock = new Mock<ISettingsService>();
+        settingsMock.Setup(s => s.Load()).Returns(new AppSettings { Url = "192.168.1.100" });
+
+        var connectivityMock = new Mock<IConnectivityService>();
+        connectivityMock
+            .Setup(c => c.IsReachableAsync("https://192.168.1.100", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+        connectivityMock
+            .Setup(c => c.IsReachableAsync("http://192.168.1.100", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var vm = new MainViewModel(settingsMock.Object, connectivityMock.Object);
+        vm.CurrentUrl = "192.168.1.100";
+
+        string? navigatedTo = null;
+        bool connectionErrorFired = false;
+        vm.NavigationRequested += url => navigatedTo = url;
+        vm.ConnectionErrorRequested += _ => connectionErrorFired = true;
+
+        await vm.NavigateAsync();
+
+        navigatedTo.Should().Be("http://192.168.1.100");
+        connectionErrorFired.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task NavigateAsync_WhenAllCandidatesUnreachable_FiresConnectionError()
+    {
+        var settingsMock = new Mock<ISettingsService>();
+        settingsMock.Setup(s => s.Load()).Returns(new AppSettings { Url = "192.168.1.100" });
+
+        var connectivityMock = new Mock<IConnectivityService>();
+        connectivityMock
+            .Setup(c => c.IsReachableAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var vm = new MainViewModel(settingsMock.Object, connectivityMock.Object);
+        vm.CurrentUrl = "192.168.1.100";
+
+        string? errorUrl = null;
+        vm.ConnectionErrorRequested += url => errorUrl = url;
+
+        await vm.NavigateAsync();
+
+        errorUrl.Should().Be("192.168.1.100");  // raw input, not a candidate URL
+    }
 }
 

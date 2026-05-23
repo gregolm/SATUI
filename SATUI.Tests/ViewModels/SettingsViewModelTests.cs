@@ -65,9 +65,27 @@ public class SettingsViewModelTests
     public void IsValid_WhenUrlIsMalformed_ReturnsFalse()
     {
         var (vm, _) = CreateSut();
-        vm.Url = "not-a-url";
+        vm.Url = "@#$%!";  // garbage characters — invalid as host or IP
 
         vm.IsValid.Should().BeFalse();
+    }
+
+    [Fact]
+    public void IsValid_WhenBareIPv4_ReturnsTrue()
+    {
+        var (vm, _) = CreateSut();
+        vm.Url = "192.168.1.100";
+
+        vm.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsValid_WhenBareHostname_ReturnsTrue()
+    {
+        var (vm, _) = CreateSut();
+        vm.Url = "sat-terminal";
+
+        vm.IsValid.Should().BeTrue();
     }
 
     [Fact]
@@ -153,5 +171,38 @@ public class SettingsViewModelTests
         vm.Url = "https://valid.com";
 
         vm.UrlValidationError.Should().BeNull();
+    }
+
+    [Fact]
+    public void UrlHint_WhenBareIP_ReturnsHintText()
+    {
+        var (vm, _) = CreateSut();
+        vm.Url = "192.168.1.100";
+
+        vm.UrlHint.Should().NotBeNull();
+        vm.HasUrlHint.Should().BeTrue();
+    }
+
+    [Fact]
+    public void UrlHint_WhenFullHttpsUrl_ReturnsNull()
+    {
+        var (vm, _) = CreateSut();
+        vm.Url = "https://192.168.1.100";
+
+        vm.UrlHint.Should().BeNull();
+        vm.HasUrlHint.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ChangingUrl_RaisesPropertyChangedForHintProperties()
+    {
+        var (vm, _) = CreateSut();
+        var changedProps = new List<string?>();
+        vm.PropertyChanged += (_, e) => changedProps.Add(e.PropertyName);
+
+        vm.Url = "192.168.1.100";
+
+        changedProps.Should().Contain(nameof(vm.UrlHint));
+        changedProps.Should().Contain(nameof(vm.HasUrlHint));
     }
 }

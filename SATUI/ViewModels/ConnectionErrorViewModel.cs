@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SATUI.Services;
 
 namespace SATUI.ViewModels;
 
@@ -28,22 +29,15 @@ public partial class ConnectionErrorViewModel : ObservableObject
         _url = attemptedUrl;
     }
 
-    public string? UrlValidationError
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(Url))
-                return "URL cannot be empty.";
-            if (!Uri.TryCreate(Url, UriKind.Absolute, out var uri) ||
-                (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
-                return "URL must be a valid http:// or https:// address.";
-            return null;
-        }
-    }
+    public string? UrlValidationError => UrlNormalizer.Validate(Url);
 
     public bool HasUrlValidationError => UrlValidationError is not null;
 
     public bool IsUrlValid => UrlValidationError is null;
+
+    public string? UrlHint => UrlNormalizer.GetHint(Url);
+
+    public bool HasUrlHint => UrlHint is not null;
 
     [RelayCommand(CanExecute = nameof(IsUrlValid))]
     public void Retry()
@@ -62,5 +56,7 @@ public partial class ConnectionErrorViewModel : ObservableObject
         OnPropertyChanged(nameof(UrlValidationError));
         OnPropertyChanged(nameof(HasUrlValidationError));
         OnPropertyChanged(nameof(IsUrlValid));
+        OnPropertyChanged(nameof(UrlHint));
+        OnPropertyChanged(nameof(HasUrlHint));
     }
 }

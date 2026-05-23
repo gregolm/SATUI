@@ -26,22 +26,15 @@ public partial class SettingsViewModel : ObservableObject
         _url = settings.Url;
     }
 
-    public string? UrlValidationError
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(Url))
-                return "URL cannot be empty.";
-            if (!Uri.TryCreate(Url, UriKind.Absolute, out var uri) ||
-                (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
-                return "URL must be a valid http:// or https:// address.";
-            return null;
-        }
-    }
+    public string? UrlValidationError => UrlNormalizer.Validate(Url);
 
     public bool HasUrlValidationError => UrlValidationError is not null;
 
     public bool IsValid => UrlValidationError is null;
+
+    public string? UrlHint => UrlNormalizer.GetHint(Url);
+
+    public bool HasUrlHint => UrlHint is not null;
 
     [RelayCommand(CanExecute = nameof(IsValid))]
     public void Save()
@@ -62,5 +55,7 @@ public partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(UrlValidationError));
         OnPropertyChanged(nameof(HasUrlValidationError));
         OnPropertyChanged(nameof(IsValid));
+        OnPropertyChanged(nameof(UrlHint));
+        OnPropertyChanged(nameof(HasUrlHint));
     }
 }

@@ -15,7 +15,7 @@
                    Foreground="{DynamicResource AppText}" Margin="0,0,0,20"/>
 
         <!-- URL field -->
-        <TextBlock Text="SAT URL" FontSize="13" Foreground="{DynamicResource AppTextMuted}" Margin="0,0,0,6"/>
+        <TextBlock Text="SAT IP Address or URL" FontSize="13" Foreground="{DynamicResource AppTextMuted}" Margin="0,0,0,6"/>
         <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"
                  FontSize="13" Padding="8,6"
                  Background="{DynamicResource AppSurface}" Foreground="{DynamicResource AppText}"
@@ -26,6 +26,12 @@
                    FontSize="12" Foreground="{DynamicResource AppError}"
                    Margin="0,4,0,0"
                    Visibility="{Binding HasUrlValidationError, Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- Hint (shown when no protocol prefix is detected) -->
+        <TextBlock Text="{Binding UrlHint}"
+                   FontSize="12" Foreground="{DynamicResource AppAccent}"
+                   Margin="0,4,0,0" TextWrapping="Wrap"
+                   Visibility="{Binding HasUrlHint, Converter={StaticResource BoolToVisibility}}"/>
 
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">

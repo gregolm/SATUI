@@ -66,12 +66,20 @@ public partial class MainViewModel : ObservableObject
 
         IsLoading = true;
 
-        var reachable = await _connectivityService.IsReachableAsync(CurrentUrl);
+        string? resolvedUrl = null;
+        foreach (var candidate in UrlNormalizer.GetCandidates(CurrentUrl))
+        {
+            if (await _connectivityService.IsReachableAsync(candidate))
+            {
+                resolvedUrl = candidate;
+                break;
+            }
+        }
 
         IsLoading = false;
 
-        if (reachable)
-            NavigationRequested?.Invoke(CurrentUrl);
+        if (resolvedUrl is not null)
+            NavigationRequested?.Invoke(resolvedUrl);
         else
             ConnectionErrorRequested?.Invoke(CurrentUrl);
     }
