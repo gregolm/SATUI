@@ -1,4 +1,3 @@
-using FluentAssertions;
 using SATUI.Services;
 
 namespace SATUI.Tests.Services;
@@ -10,7 +9,7 @@ public class WindowsThemeServiceTests
     {
         var sut = new WindowsThemeService(() => true);
 
-        sut.IsDarkMode.Should().BeTrue();
+        sut.IsDarkMode.ShouldBeTrue();
     }
 
     [Fact]
@@ -18,7 +17,7 @@ public class WindowsThemeServiceTests
     {
         var sut = new WindowsThemeService(() => false);
 
-        sut.IsDarkMode.Should().BeFalse();
+        sut.IsDarkMode.ShouldBeFalse();
     }
 
     [Fact]
@@ -27,10 +26,10 @@ public class WindowsThemeServiceTests
         bool isDark = true;
         var sut = new WindowsThemeService(() => isDark);
 
-        sut.IsDarkMode.Should().BeTrue();
+        sut.IsDarkMode.ShouldBeTrue();
 
         isDark = false;
-        sut.IsDarkMode.Should().BeFalse();
+        sut.IsDarkMode.ShouldBeFalse();
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class WindowsThemeServiceTests
 
         sut.SimulateThemeChange();
 
-        fired.Should().BeTrue();
+        fired.ShouldBeTrue();
     }
 
     [Fact]
@@ -54,7 +53,7 @@ public class WindowsThemeServiceTests
 
         sut.SimulateThemeChange();
 
-        receivedSender.Should().BeSameAs(sut);
+        receivedSender.ShouldBeSameAs(sut);
     }
 
     [Fact]
@@ -62,8 +61,6 @@ public class WindowsThemeServiceTests
     {
         var sut = new WindowsThemeService(() => true);
 
-        var act = () => sut.SimulateThemeChange();
-
-        act.Should().NotThrow();
+        Should.NotThrow(() => sut.SimulateThemeChange());
     }
 }

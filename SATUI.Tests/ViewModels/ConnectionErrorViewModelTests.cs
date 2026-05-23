@@ -1,4 +1,3 @@
-using FluentAssertions;
 using SATUI.ViewModels;
 
 namespace SATUI.Tests.ViewModels;
@@ -13,8 +12,8 @@ public class ConnectionErrorViewModelTests
     {
         var vm = CreateSut("https://sat.local/ui");
 
-        vm.AttemptedUrl.Should().Be("https://sat.local/ui");
-        vm.Url.Should().Be("https://sat.local/ui");
+        vm.AttemptedUrl.ShouldBe("https://sat.local/ui");
+        vm.Url.ShouldBe("https://sat.local/ui");
     }
 
     [Fact]
@@ -23,8 +22,8 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = "http://sat.local";
 
-        vm.IsUrlValid.Should().BeTrue();
-        vm.UrlValidationError.Should().BeNull();
+        vm.IsUrlValid.ShouldBeTrue();
+        vm.UrlValidationError.ShouldBeNull();
     }
 
     [Fact]
@@ -33,8 +32,8 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = "https://192.168.1.1/ui";
 
-        vm.IsUrlValid.Should().BeTrue();
-        vm.HasUrlValidationError.Should().BeFalse();
+        vm.IsUrlValid.ShouldBeTrue();
+        vm.HasUrlValidationError.ShouldBeFalse();
     }
 
     [Fact]
@@ -43,9 +42,9 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = string.Empty;
 
-        vm.IsUrlValid.Should().BeFalse();
-        vm.HasUrlValidationError.Should().BeTrue();
-        vm.UrlValidationError.Should().NotBeNull();
+        vm.IsUrlValid.ShouldBeFalse();
+        vm.HasUrlValidationError.ShouldBeTrue();
+        vm.UrlValidationError.ShouldNotBeNull();
     }
 
     [Fact]
@@ -54,8 +53,8 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = "ftp://sat.local";
 
-        vm.IsUrlValid.Should().BeFalse();
-        vm.UrlValidationError.Should().NotBeNull();
+        vm.IsUrlValid.ShouldBeFalse();
+        vm.UrlValidationError.ShouldNotBeNull();
     }
 
     [Fact]
@@ -64,8 +63,8 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = "not a url";
 
-        vm.IsUrlValid.Should().BeFalse();
-        vm.HasUrlValidationError.Should().BeTrue();
+        vm.IsUrlValid.ShouldBeFalse();
+        vm.HasUrlValidationError.ShouldBeTrue();
     }
 
     [Fact]
@@ -78,7 +77,7 @@ public class ConnectionErrorViewModelTests
 
         vm.RetryCommand.Execute(null);
 
-        receivedUrl.Should().Be("https://sat.local/dashboard");
+        receivedUrl.ShouldBe("https://sat.local/dashboard");
     }
 
     [Fact]
@@ -87,7 +86,7 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = string.Empty;
 
-        vm.RetryCommand.CanExecute(null).Should().BeFalse();
+        vm.RetryCommand.CanExecute(null).ShouldBeFalse();
     }
 
     [Fact]
@@ -95,7 +94,7 @@ public class ConnectionErrorViewModelTests
     {
         var vm = CreateSut("https://sat.local");
 
-        vm.RetryCommand.CanExecute(null).Should().BeTrue();
+        vm.RetryCommand.CanExecute(null).ShouldBeTrue();
     }
 
     [Fact]
@@ -107,7 +106,7 @@ public class ConnectionErrorViewModelTests
 
         vm.CancelCommand.Execute(null);
 
-        fired.Should().BeTrue();
+        fired.ShouldBeTrue();
     }
 
     [Fact]
@@ -119,11 +118,11 @@ public class ConnectionErrorViewModelTests
 
         vm.Url = "bad url";
 
-        changedProps.Should().Contain(nameof(vm.UrlValidationError));
-        changedProps.Should().Contain(nameof(vm.HasUrlValidationError));
-        changedProps.Should().Contain(nameof(vm.IsUrlValid));
-        changedProps.Should().Contain(nameof(vm.UrlHint));
-        changedProps.Should().Contain(nameof(vm.HasUrlHint));
+        changedProps.ShouldContain(nameof(vm.UrlValidationError));
+        changedProps.ShouldContain(nameof(vm.HasUrlValidationError));
+        changedProps.ShouldContain(nameof(vm.IsUrlValid));
+        changedProps.ShouldContain(nameof(vm.UrlHint));
+        changedProps.ShouldContain(nameof(vm.HasUrlHint));
     }
 
     [Fact]
@@ -132,11 +131,11 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = string.Empty; // invalid
 
-        vm.RetryCommand.CanExecute(null).Should().BeFalse();
+        vm.RetryCommand.CanExecute(null).ShouldBeFalse();
 
         vm.Url = "https://sat.local"; // valid
 
-        vm.RetryCommand.CanExecute(null).Should().BeTrue();
+        vm.RetryCommand.CanExecute(null).ShouldBeTrue();
     }
 
     [Fact]
@@ -145,7 +144,7 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = "192.168.1.100";
 
-        vm.IsUrlValid.Should().BeTrue();
+        vm.IsUrlValid.ShouldBeTrue();
     }
 
     [Fact]
@@ -154,8 +153,8 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = "192.168.1.100";
 
-        vm.UrlHint.Should().NotBeNull();
-        vm.HasUrlHint.Should().BeTrue();
+        vm.UrlHint.ShouldNotBeNull();
+        vm.HasUrlHint.ShouldBeTrue();
     }
 
     [Fact]
@@ -164,7 +163,7 @@ public class ConnectionErrorViewModelTests
         var vm = CreateSut();
         vm.Url = "https://sat.local";
 
-        vm.UrlHint.Should().BeNull();
-        vm.HasUrlHint.Should().BeFalse();
+        vm.UrlHint.ShouldBeNull();
+        vm.HasUrlHint.ShouldBeFalse();
     }
 }

@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Moq;
 using SATUI.Models;
 using SATUI.Services;
@@ -22,7 +21,7 @@ public class SettingsViewModelTests
     {
         var (vm, _) = CreateSut("https://loaded.com");
 
-        vm.Url.Should().Be("https://loaded.com");
+        vm.Url.ShouldBe("https://loaded.com");
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "https://valid.example.com";
 
-        vm.IsValid.Should().BeTrue();
+        vm.IsValid.ShouldBeTrue();
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "http://valid.example.com";
 
-        vm.IsValid.Should().BeTrue();
+        vm.IsValid.ShouldBeTrue();
     }
 
     [Fact]
@@ -49,7 +48,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = string.Empty;
 
-        vm.IsValid.Should().BeFalse();
+        vm.IsValid.ShouldBeFalse();
     }
 
     [Fact]
@@ -58,7 +57,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "   ";
 
-        vm.IsValid.Should().BeFalse();
+        vm.IsValid.ShouldBeFalse();
     }
 
     [Fact]
@@ -67,7 +66,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "@#$%!";  // garbage characters — invalid as host or IP
 
-        vm.IsValid.Should().BeFalse();
+        vm.IsValid.ShouldBeFalse();
     }
 
     [Fact]
@@ -76,7 +75,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "192.168.1.100";
 
-        vm.IsValid.Should().BeTrue();
+        vm.IsValid.ShouldBeTrue();
     }
 
     [Fact]
@@ -85,7 +84,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "sat-terminal";
 
-        vm.IsValid.Should().BeTrue();
+        vm.IsValid.ShouldBeTrue();
     }
 
     [Fact]
@@ -94,7 +93,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "ftp://example.com";
 
-        vm.IsValid.Should().BeFalse();
+        vm.IsValid.ShouldBeFalse();
     }
 
     [Fact]
@@ -103,7 +102,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "https://valid.example.com";
 
-        vm.SaveCommand.CanExecute(null).Should().BeTrue();
+        vm.SaveCommand.CanExecute(null).ShouldBeTrue();
     }
 
     [Fact]
@@ -112,7 +111,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = string.Empty;
 
-        vm.SaveCommand.CanExecute(null).Should().BeFalse();
+        vm.SaveCommand.CanExecute(null).ShouldBeFalse();
     }
 
     [Fact]
@@ -138,8 +137,8 @@ public class SettingsViewModelTests
 
         vm.SaveCommand.Execute(null);
 
-        savedSettings.Should().NotBeNull();
-        savedSettings!.Url.Should().Be("https://new.example.com");
+        savedSettings.ShouldNotBeNull();
+        savedSettings!.Url.ShouldBe("https://new.example.com");
     }
 
     [Fact]
@@ -151,7 +150,7 @@ public class SettingsViewModelTests
 
         vm.CancelCommand.Execute(null);
 
-        cancelled.Should().BeTrue();
+        cancelled.ShouldBeTrue();
         settingsMock.Verify(s => s.Save(It.IsAny<AppSettings>()), Times.Never);
     }
 
@@ -161,7 +160,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = string.Empty;
 
-        vm.UrlValidationError.Should().NotBeNullOrEmpty();
+        vm.UrlValidationError.ShouldNotBeNullOrEmpty();
     }
 
     [Fact]
@@ -170,7 +169,7 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "https://valid.com";
 
-        vm.UrlValidationError.Should().BeNull();
+        vm.UrlValidationError.ShouldBeNull();
     }
 
     [Fact]
@@ -179,8 +178,8 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "192.168.1.100";
 
-        vm.UrlHint.Should().NotBeNull();
-        vm.HasUrlHint.Should().BeTrue();
+        vm.UrlHint.ShouldNotBeNull();
+        vm.HasUrlHint.ShouldBeTrue();
     }
 
     [Fact]
@@ -189,8 +188,8 @@ public class SettingsViewModelTests
         var (vm, _) = CreateSut();
         vm.Url = "https://192.168.1.100";
 
-        vm.UrlHint.Should().BeNull();
-        vm.HasUrlHint.Should().BeFalse();
+        vm.UrlHint.ShouldBeNull();
+        vm.HasUrlHint.ShouldBeFalse();
     }
 
     [Fact]
@@ -202,7 +201,7 @@ public class SettingsViewModelTests
 
         vm.Url = "192.168.1.100";
 
-        changedProps.Should().Contain(nameof(vm.UrlHint));
-        changedProps.Should().Contain(nameof(vm.HasUrlHint));
+        changedProps.ShouldContain(nameof(vm.UrlHint));
+        changedProps.ShouldContain(nameof(vm.HasUrlHint));
     }
 }

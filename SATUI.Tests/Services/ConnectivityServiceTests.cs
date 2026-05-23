@@ -1,5 +1,4 @@
 using System.Net;
-using FluentAssertions;
 using Moq;
 using SATUI.Services;
 
@@ -25,7 +24,7 @@ public class ConnectivityServiceTests
 
         var result = await sut.IsReachableAsync("https://www.example.com");
 
-        result.Should().BeTrue();
+        result.ShouldBeTrue();
     }
 
     [Fact]
@@ -37,7 +36,7 @@ public class ConnectivityServiceTests
 
         var result = await sut.IsReachableAsync("https://www.example.com");
 
-        result.Should().BeTrue();
+        result.ShouldBeTrue();
     }
 
     [Fact]
@@ -48,7 +47,7 @@ public class ConnectivityServiceTests
 
         var result = await sut.IsReachableAsync("https://www.example.com");
 
-        result.Should().BeFalse();
+        result.ShouldBeFalse();
     }
 
     [Fact]
@@ -59,7 +58,7 @@ public class ConnectivityServiceTests
 
         var result = await sut.IsReachableAsync("https://www.example.com");
 
-        result.Should().BeFalse();
+        result.ShouldBeFalse();
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class ConnectivityServiceTests
 
         var result = await sut.IsReachableAsync("not-a-valid-url");
 
-        result.Should().BeFalse();
+        result.ShouldBeFalse();
     }
 
     [Fact]
@@ -81,7 +80,7 @@ public class ConnectivityServiceTests
 
         var result = await sut.IsReachableAsync(string.Empty);
 
-        result.Should().BeFalse();
+        result.ShouldBeFalse();
     }
 
     [Fact]
@@ -92,7 +91,7 @@ public class ConnectivityServiceTests
 
         var result = await sut.IsReachableAsync("https://www.example.com");
 
-        result.Should().BeFalse();
+        result.ShouldBeFalse();
     }
 
     // Minimal fake handlers to avoid heavy mocking of HttpMessageHandler internals

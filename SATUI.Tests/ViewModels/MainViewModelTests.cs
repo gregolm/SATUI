@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Moq;
 using SATUI.Models;
 using SATUI.Services;
@@ -31,7 +30,7 @@ public class MainViewModelTests
 
         await vm.InitializeAsync();
 
-        vm.CurrentUrl.Should().Be("https://test.satui.com");
+        vm.CurrentUrl.ShouldBe("https://test.satui.com");
     }
 
     [Fact]
@@ -43,7 +42,7 @@ public class MainViewModelTests
 
         await vm.InitializeAsync();
 
-        navigatedTo.Should().Be("https://www.example.com");
+        navigatedTo.ShouldBe("https://www.example.com");
     }
 
     [Fact]
@@ -57,8 +56,8 @@ public class MainViewModelTests
 
         await vm.InitializeAsync();
 
-        navigated.Should().BeFalse();
-        errorUrl.Should().Be("https://www.example.com");
+        navigated.ShouldBeFalse();
+        errorUrl.ShouldBe("https://www.example.com");
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class MainViewModelTests
 
         await vm.InitializeAsync();
 
-        settingsFired.Should().BeTrue();
+        settingsFired.ShouldBeTrue();
         connectivityMock.Verify(
             c => c.IsReachableAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Never);
@@ -86,7 +85,7 @@ public class MainViewModelTests
 
         await vm.NavigateAsync();
 
-        settingsFired.Should().BeTrue();
+        settingsFired.ShouldBeTrue();
         connectivityMock.Verify(
             c => c.IsReachableAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Never);
@@ -101,7 +100,7 @@ public class MainViewModelTests
 
         await vm.NavigateAsync();
 
-        errorUrl.Should().Be("https://www.example.com");
+        errorUrl.ShouldBe("https://www.example.com");
     }
 
     [Fact]
@@ -115,8 +114,8 @@ public class MainViewModelTests
 
         await vm.NavigateAsync();
 
-        navigatedTo.Should().Be("https://www.example.com");
-        connectionErrorFired.Should().BeFalse();
+        navigatedTo.ShouldBe("https://www.example.com");
+        connectionErrorFired.ShouldBeFalse();
     }
 
     [Fact]
@@ -134,12 +133,12 @@ public class MainViewModelTests
         vm.CurrentUrl = "https://example.com";
 
         var navigateTask = vm.NavigateAsync();
-        vm.IsLoading.Should().BeTrue();
+        vm.IsLoading.ShouldBeTrue();
 
         tcs.SetResult(true);
         await navigateTask;
 
-        vm.IsLoading.Should().BeFalse();
+        vm.IsLoading.ShouldBeFalse();
     }
 
     [Fact]
@@ -151,8 +150,8 @@ public class MainViewModelTests
 
         vm.OnNavigationFailed("https://example.com", "ERR_NAME_NOT_RESOLVED");
 
-        errorUrl.Should().Be("https://example.com");
-        vm.IsLoading.Should().BeFalse();
+        errorUrl.ShouldBe("https://example.com");
+        vm.IsLoading.ShouldBeFalse();
     }
 
     [Fact]
@@ -162,7 +161,7 @@ public class MainViewModelTests
 
         vm.ApplySettings(new AppSettings { Url = "https://new.url.com" });
 
-        vm.CurrentUrl.Should().Be("https://new.url.com");
+        vm.CurrentUrl.ShouldBe("https://new.url.com");
     }
 
     [Fact]
@@ -174,7 +173,7 @@ public class MainViewModelTests
 
         vm.OpenSettingsCommand.Execute(null);
 
-        fired.Should().BeTrue();
+        fired.ShouldBeTrue();
     }
 
     [Fact]
@@ -201,8 +200,8 @@ public class MainViewModelTests
 
         await vm.NavigateAsync();
 
-        navigatedTo.Should().Be("http://192.168.1.100");
-        connectionErrorFired.Should().BeFalse();
+        navigatedTo.ShouldBe("http://192.168.1.100");
+        connectionErrorFired.ShouldBeFalse();
     }
 
     [Fact]
@@ -224,7 +223,6 @@ public class MainViewModelTests
 
         await vm.NavigateAsync();
 
-        errorUrl.Should().Be("192.168.1.100");  // raw input, not a candidate URL
+        errorUrl.ShouldBe("192.168.1.100");  // raw input, not a candidate URL
     }
 }
-

@@ -1,6 +1,5 @@
 using System.IO;
 using System.Text.Json;
-using FluentAssertions;
 using SATUI.Models;
 using SATUI.Services;
 
@@ -32,8 +31,8 @@ public class SettingsServiceTests : IDisposable
         var settings = _sut.Load();
 
         // Default URL is empty — triggers first-run settings dialog on startup
-        settings.Should().NotBeNull();
-        settings.Url.Should().BeEmpty();
+        settings.ShouldNotBeNull();
+        settings.Url.ShouldBeEmpty();
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public class SettingsServiceTests : IDisposable
         _sut.Save(original);
         var loaded = _sut.Load();
 
-        loaded.Url.Should().Be(original.Url);
+        loaded.Url.ShouldBe(original.Url);
     }
 
     [Fact]
@@ -54,7 +53,7 @@ public class SettingsServiceTests : IDisposable
 
         _sut.Save(settings);
 
-        File.Exists(_settingsFile).Should().BeTrue();
+        File.Exists(_settingsFile).ShouldBeTrue();
     }
 
     [Fact]
@@ -65,8 +64,7 @@ public class SettingsServiceTests : IDisposable
         _sut.Save(settings);
 
         var json = File.ReadAllText(_settingsFile);
-        var act = () => JsonSerializer.Deserialize<AppSettings>(json);
-        act.Should().NotThrow();
+        Should.NotThrow(() => JsonSerializer.Deserialize<AppSettings>(json));
     }
 
     [Fact]
@@ -77,8 +75,8 @@ public class SettingsServiceTests : IDisposable
         var settings = _sut.Load();
 
         // Default URL is empty — triggers first-run settings dialog on startup
-        settings.Should().NotBeNull();
-        settings.Url.Should().BeEmpty();
+        settings.ShouldNotBeNull();
+        settings.Url.ShouldBeEmpty();
     }
 
     [Fact]
@@ -88,7 +86,7 @@ public class SettingsServiceTests : IDisposable
 
         var settings = _sut.Load();
 
-        settings.Should().NotBeNull();
+        settings.ShouldNotBeNull();
     }
 
     [Fact]
@@ -99,6 +97,6 @@ public class SettingsServiceTests : IDisposable
 
         var loaded = _sut.Load();
 
-        loaded.Url.Should().Be("https://second.com");
+        loaded.Url.ShouldBe("https://second.com");
     }
 }
