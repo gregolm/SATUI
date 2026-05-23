@@ -5,6 +5,7 @@ namespace SATUI.UITests.Infrastructure;
 /// <summary>
 /// Minimal embedded HTTP server that serves 200 OK responses.
 /// Gives the app a reachable URL so connectivity checks pass during UI tests.
+/// Uses a dynamically allocated port to avoid conflicts.
 /// </summary>
 public sealed class LocalHttpServer : IDisposable
 {
@@ -16,8 +17,17 @@ public sealed class LocalHttpServer : IDisposable
     /// <summary>Just the host:port without protocol, ready to paste into the URL field.</summary>
     public string HostAndPort { get; }
 
-    public LocalHttpServer(int port = 18773)
+    public LocalHttpServer()
     {
+        // Get a free port from the OS
+        var socket = new System.Net.Sockets.Socket(
+            System.Net.Sockets.AddressFamily.InterNetwork,
+            System.Net.Sockets.SocketType.Stream,
+            System.Net.Sockets.ProtocolType.Tcp);
+        socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+        var port = ((IPEndPoint)socket.LocalEndPoint!).Port;
+        socket.Close();
+
         BaseUrl = $"http://127.0.0.1:{port}/";
         HostAndPort = $"127.0.0.1:{port}";
         _listener.Prefixes.Add(BaseUrl);
@@ -51,3 +61,4 @@ public sealed class LocalHttpServer : IDisposable
         _cts.Dispose();
     }
 }
+
