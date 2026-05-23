@@ -1,80 +1,97 @@
-# 📡 SATUI — Satellite Access Terminal User Interface
+# 📡 SATUI — Satellite Access Terminal UI
 
 [![CI](https://github.com/gregolm/SATUI/actions/workflows/ci.yml/badge.svg)](https://github.com/gregolm/SATUI/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/gregolm/SATUI?label=release&color=6C63FF)](https://github.com/gregolm/SATUI/releases/latest)
 
-A Windows 11 desktop application built with .NET 10 (WPF) that embeds web content from a configured satellite access terminal URL, providing a clean kiosk-style interface for satellite radio communication systems.
-
-## Features
-
-- **Embedded browser** — Chromium-based WebView2 renders the terminal's web UI
-- **Auto-configure on first run** — opens Settings dialog immediately if no URL is configured
-- **Connection error recovery** — friendly dialog prompts to verify the SAT is powered on, with option to change the URL and retry
-- **Settings persistence** — URL saved to `%APPDATA%\SATUI\settings.json`
-- **Full-screen support** — F11 toggles true borderless full-screen
-- **Standard window behavior** — maximize, minimize, resize all work as expected
+SATUI is a clean Windows desktop app that puts your Satellite Access Terminal's web interface front and center. Point it at your SAT's URL once and it launches straight into a full-screen-capable, kiosk-style browser window — no browser chrome, no distractions.
 
 ## Screenshots
 
 _Coming soon_
 
-## Requirements
+## Installation
+
+Download the latest release from the [Releases page](https://github.com/gregolm/SATUI/releases/latest).
+
+| Installer | Description |
+|---|---|
+| **SATUI-Setup.zip** | Recommended. Extract and run `Install.bat` (requires administrator). Creates Start Menu shortcut and adds SATUI to Programs & Features. |
+| **SATUI-\*.msix** | MSIX package. Run the `.msix` file directly if your system is configured to trust the package. |
+| **SATUI-win-x64-portable.zip** | No install needed. Extract anywhere and run `SATUI.exe`. Settings are saved to `%APPDATA%\SATUI`. |
+
+### Requirements
 
 - Windows 11 (x64)
-- [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) (included in Windows 11)
+- WebView2 Runtime — already included in Windows 11
 
-## Building from Source
+## Getting Started
+
+**First run:** SATUI will immediately ask you for your SAT's URL. Enter the full address (e.g. `http://192.168.1.1`) and click **Save**. The app connects and loads the interface.
+
+**Change the URL later:** Click the URL shown in the title bar, or click the ⚙️ gear icon at the top right.
+
+**Connection problems:** If SATUI can't reach the SAT, a dialog will appear with steps to try. You can enter a new URL or retry from there.
+
+**Full screen:** Press **F11** to toggle borderless full-screen mode. Standard window controls (maximize, minimize, resize) work as expected.
+
+## Features
+
+- **Embedded Chromium browser** — WebView2 renders the SAT's web UI natively
+- **First-run setup** — prompts for URL on first launch, no manual config file needed
+- **Smart connection errors** — friendly recovery dialog with retry and URL-change options
+- **Clickable header bar** — click the URL or the ⚙️ icon to open settings at any time
+- **Full-screen mode** — F11 for a true borderless, distraction-free view
+- **Settings persistence** — URL saved automatically to `%APPDATA%\SATUI\settings.json`
+- **Windows 11 native feel** — respects light/dark theme, standard window behavior
+
+---
+
+## For Developers
 
 ### Prerequisites
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
-### Build
+### Build & Test
 
 ```bash
 git clone https://github.com/gregolm/SATUI.git
 cd SATUI
 dotnet build
+dotnet test SATUI.Tests/SATUI.Tests.csproj
 ```
 
-### Run Tests
+### Publish (self-contained)
 
 ```bash
-dotnet test
+dotnet publish SATUI/SATUI.csproj -c Release -r win-x64 --self-contained \
+  -p:TrimMode=link -p:EnableTrimAnalyzer=false -o publish/
 ```
 
-### Publish (self-contained single EXE)
-
-```bash
-dotnet publish SATUI/SATUI.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o publish/
-```
-
-## Architecture
+### Architecture
 
 ```
 SATUI/
-├── Models/         — AppSettings (URL config)
-├── ViewModels/     — MainViewModel, SettingsViewModel, ConnectionErrorViewModel
-├── Views/          — SettingsDialog, ConnectionErrorDialog
-├── Services/       — ISettingsService, IConnectivityService
-└── Resources/      — satellite.ico (multi-size, 16/32/48/256px)
+├── Models/         — AppSettings { Url, LicenseAccepted }
+├── ViewModels/     — MainViewModel, SettingsViewModel, LicenseViewModel, ConnectionErrorViewModel
+├── Views/          — SettingsDialog, LicenseDialog, ConnectionErrorDialog
+├── Services/       — ISettingsService, IConnectivityService, IThemeService
+└── Resources/      — satellite.ico
 
-SATUI.Tests/
-├── ViewModels/     — MainViewModelTests, SettingsViewModelTests, ConnectionErrorViewModelTests
-└── Services/       — SettingsServiceTests, ConnectivityServiceTests
+SATUI.Tests/        — 110 unit tests (xUnit + Moq + Shouldly)
+SATUI.UITests/      — FlaUI integration tests (requires display)
 ```
 
-- **MVVM** via `CommunityToolkit.Mvvm` with constructor-injected interfaces
+- **MVVM** via `CommunityToolkit.Mvvm` (source-generated commands and properties)
 - **DI** via `Microsoft.Extensions.DependencyInjection`
-- **Tests** via xUnit + Moq + FluentAssertions
-- **Coverage** via Coverlet
+- **ViewModel → View communication** via typed events (no View references in ViewModels)
 
-## CI / CD
+### CI / CD
 
 | Trigger | Action |
 |---|---|
-| Push / PR → main | Build + test + coverage report |
-| Tag `v*.*.*` | Build, publish, create GitHub Release with EXE |
+| Push / PR → `main` | Build + unit tests + code coverage |
+| Tag `v*.*.*` | Build, publish, package MSIX + installer ZIP + portable ZIP, create GitHub Release |
 
 ## License
 
