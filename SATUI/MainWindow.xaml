@@ -41,13 +41,15 @@
                 <Button DockPanel.Dock="Right"
                         Content="⚙" Command="{Binding OpenSettingsCommand}"
                         Style="{StaticResource HeaderIconButton}"
-                        ToolTip="Settings (Alt+S)" Width="32"/>
+                                AutomationProperties.AutomationId="GearButton"
+                                ToolTip="Settings (Alt+S)" Width="32"/>
 
-                <!-- Reload button (to the left of the gear) -->
-                <Button DockPanel.Dock="Right"
-                        Content="⟳" Command="{Binding NavigateCommand}"
-                        Style="{StaticResource HeaderIconButton}"
-                        ToolTip="Reload (Ctrl+R)" Width="32" Margin="0,0,2,0"/>
+                        <!-- Reload button (to the left of the gear) -->
+                        <Button DockPanel.Dock="Right"
+                                Content="⟳" Command="{Binding NavigateCommand}"
+                                Style="{StaticResource HeaderIconButton}"
+                                AutomationProperties.AutomationId="ReloadButton"
+                                ToolTip="Reload (Ctrl+R)" Width="32" Margin="0,0,2,0"/>
 
                 <Rectangle DockPanel.Dock="Right" Width="1" Fill="{DynamicResource AppBorder}"
                            VerticalAlignment="Stretch" Margin="4,6"/>
@@ -56,6 +58,7 @@
                 <Button Content="{Binding CurrentUrl}"
                         Command="{Binding OpenSettingsCommand}"
                         Style="{StaticResource HeaderUrlButton}"
+                        AutomationProperties.AutomationId="UrlButton"
                         ToolTip="Click to configure URL"/>
 
             </DockPanel>

@@ -33,6 +33,7 @@
         <TextBlock Text="LAST ATTEMPTED ADDRESS" FontSize="11" FontWeight="SemiBold"
                    Foreground="{DynamicResource AppAccent}" Margin="0,0,0,4"/>
         <TextBox Text="{Binding AttemptedUrl, Mode=OneTime}"
+                 AutomationProperties.AutomationId="AttemptedUrlTextBox"
                  IsReadOnly="True"
                  FontSize="12" Padding="8,6"
                  Background="{DynamicResource AppSurfaceDark}" Foreground="{DynamicResource AppTextDim}"
@@ -43,6 +44,7 @@
         <TextBlock Text="IP ADDRESS OR URL" FontSize="11" FontWeight="SemiBold"
                    Foreground="{DynamicResource AppAccent}" Margin="0,0,0,4"/>
         <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"
+                 AutomationProperties.AutomationId="UrlTextBox"
                  FontSize="13" Padding="8,6"
                  Background="{DynamicResource AppSurface}" Foreground="{DynamicResource AppText}"
                  CaretBrush="{DynamicResource AppText}" BorderBrush="{DynamicResource AppBorder}" BorderThickness="1"/>
@@ -62,9 +64,11 @@
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
             <Button Content="Cancel" Command="{Binding CancelCommand}"
+                    AutomationProperties.AutomationId="CancelButton"
                     Width="90" Height="34" Margin="0,0,10,0"
                     Style="{StaticResource SecondaryButton}"/>
             <Button Content="⟳  Retry" Command="{Binding RetryCommand}"
+                    AutomationProperties.AutomationId="RetryButton"
                     Width="110" Height="34"
                     Style="{StaticResource PrimaryButton}"/>
         </StackPanel>

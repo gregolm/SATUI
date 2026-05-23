@@ -17,12 +17,14 @@
         <!-- URL field -->
         <TextBlock Text="SAT IP Address or URL" FontSize="13" Foreground="{DynamicResource AppTextMuted}" Margin="0,0,0,6"/>
         <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"
+                 AutomationProperties.AutomationId="UrlTextBox"
                  FontSize="13" Padding="8,6"
                  Background="{DynamicResource AppSurface}" Foreground="{DynamicResource AppText}"
                  CaretBrush="{DynamicResource AppText}" BorderBrush="{DynamicResource AppBorder}" BorderThickness="1"/>
 
         <!-- Validation error -->
         <TextBlock Text="{Binding UrlValidationError}"
+                   AutomationProperties.AutomationId="ValidationError"
                    FontSize="12" Foreground="{DynamicResource AppError}"
                    Margin="0,4,0,0"
                    Visibility="{Binding HasUrlValidationError, Converter={StaticResource BoolToVisibility}}"/>
@@ -36,9 +38,11 @@
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
             <Button Content="{Binding SecondaryButtonText}" Command="{Binding CancelCommand}"
+                    AutomationProperties.AutomationId="CancelButton"
                     Width="120" Height="34" Margin="0,0,10,0"
                     Style="{StaticResource SecondaryButton}"/>
             <Button Content="Save" Command="{Binding SaveCommand}"
+                    AutomationProperties.AutomationId="SaveButton"
                     Width="90" Height="34"
                     Style="{StaticResource PrimaryButton}"/>
         </StackPanel>

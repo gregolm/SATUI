@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="SATUI.Tests/SATUI.Tests.csproj" />
+  <Project Path="SATUI.UITests/SATUI.UITests.csproj" />
   <Project Path="SATUI/SATUI.csproj" />
 </Solution>
