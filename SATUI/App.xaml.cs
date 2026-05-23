@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Windows;
 using SATUI.Services;
 using SATUI.ViewModels;
+using SATUI.Views;
 
 namespace SATUI;
 
@@ -29,8 +30,39 @@ public partial class App : Application
         ApplyTheme(themeService.IsDarkMode);
         themeService.ThemeChanged += (_, _) => ApplyTheme(themeService.IsDarkMode);
 
+        var settingsService = _services.GetRequiredService<ISettingsService>();
+        if (!EnsureLicenseAccepted(settingsService))
+        {
+            Shutdown();
+            return;
+        }
+
         var mainWindow = _services.GetRequiredService<MainWindow>();
         mainWindow.Show();
+    }
+
+    private bool EnsureLicenseAccepted(ISettingsService settingsService)
+    {
+        var settings = settingsService.Load();
+        if (settings.LicenseAccepted)
+            return true;
+
+        var licenseVm = new LicenseViewModel();
+        var dialog = new LicenseDialog(licenseVm);
+
+        bool accepted = false;
+        licenseVm.LicenseAccepted += () => { accepted = true; dialog.Close(); };
+        licenseVm.LicenseDeclined += () => dialog.Close();
+
+        dialog.ShowDialog();
+
+        if (accepted)
+        {
+            settings.LicenseAccepted = true;
+            settingsService.Save(settings);
+        }
+
+        return accepted;
     }
 
     private void ApplyTheme(bool isDark)

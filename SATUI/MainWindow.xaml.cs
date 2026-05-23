@@ -26,7 +26,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         viewModel.NavigationRequested += OnNavigationRequested;
-        viewModel.OpenSettingsRequested += OpenSettings;
+        viewModel.OpenSettingsRequested += allowCancel => OpenSettings(allowCancel);
         viewModel.ConnectionErrorRequested += OpenConnectionErrorDialog;
     }
 
@@ -93,9 +93,9 @@ public partial class MainWindow : Window
         dialog.ShowDialog();
     }
 
-    private void OpenSettings()
+    private void OpenSettings(bool allowCancel = true)
     {
-        var settingsVm = new SettingsViewModel(_settingsService);
+        var settingsVm = new SettingsViewModel(_settingsService, allowCancel);
         var dialog = new SettingsDialog(settingsVm);
         dialog.Owner = this;
 
@@ -103,6 +103,7 @@ public partial class MainWindow : Window
         {
             settingsVm.SettingsSaved -= OnSaved;
             settingsVm.Cancelled -= OnCancelled;
+            settingsVm.ExitRequested -= OnExitRequested;
             _viewModel.ApplySettings(settings);
             dialog.Close();
             _ = _viewModel.NavigateAsync();
@@ -112,11 +113,22 @@ public partial class MainWindow : Window
         {
             settingsVm.SettingsSaved -= OnSaved;
             settingsVm.Cancelled -= OnCancelled;
+            settingsVm.ExitRequested -= OnExitRequested;
             dialog.Close();
+        }
+
+        void OnExitRequested()
+        {
+            settingsVm.SettingsSaved -= OnSaved;
+            settingsVm.Cancelled -= OnCancelled;
+            settingsVm.ExitRequested -= OnExitRequested;
+            dialog.Close();
+            Application.Current.Shutdown();
         }
 
         settingsVm.SettingsSaved += OnSaved;
         settingsVm.Cancelled += OnCancelled;
+        settingsVm.ExitRequested += OnExitRequested;
         dialog.ShowDialog();
     }
 

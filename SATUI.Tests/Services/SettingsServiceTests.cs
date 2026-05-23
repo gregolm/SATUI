@@ -99,4 +99,37 @@ public class SettingsServiceTests : IDisposable
 
         loaded.Url.ShouldBe("https://second.com");
     }
+
+    [Fact]
+    public void Load_WhenFileDoesNotExist_LicenseAcceptedIsFalse()
+    {
+        var settings = _sut.Load();
+
+        settings.LicenseAccepted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Save_ThenLoad_RoundTripsLicenseAccepted()
+    {
+        var original = new AppSettings { Url = "https://test.com", LicenseAccepted = true };
+
+        _sut.Save(original);
+        var loaded = _sut.Load();
+
+        loaded.LicenseAccepted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Save_PreservesLicenseAcceptedWhenOnlyUpdatingUrl()
+    {
+        _sut.Save(new AppSettings { Url = "https://old.com", LicenseAccepted = true });
+
+        var loaded = _sut.Load();
+        loaded.Url = "https://new.com";
+        _sut.Save(loaded);
+
+        var reloaded = _sut.Load();
+        reloaded.LicenseAccepted.ShouldBeTrue();
+        reloaded.Url.ShouldBe("https://new.com");
+    }
 }

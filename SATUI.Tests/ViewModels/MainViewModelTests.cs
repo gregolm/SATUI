@@ -61,31 +61,35 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public async Task InitializeAsync_WhenUrlIsEmpty_FiresOpenSettingsRequestedAndSkipsConnectivity()
+    public async Task InitializeAsync_WhenUrlIsEmpty_FiresOpenSettingsRequestedWithNoCancel()
     {
         var (vm, _, connectivityMock) = CreateSut(storedUrl: string.Empty);
         bool settingsFired = false;
-        vm.OpenSettingsRequested += () => settingsFired = true;
+        bool? allowCancel = null;
+        vm.OpenSettingsRequested += allow => { settingsFired = true; allowCancel = allow; };
 
         await vm.InitializeAsync();
 
         settingsFired.ShouldBeTrue();
+        allowCancel.ShouldBe(false);
         connectivityMock.Verify(
             c => c.IsReachableAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
     [Fact]
-    public async Task NavigateAsync_WhenUrlIsEmpty_FiresOpenSettingsRequestedAndSkipsConnectivity()
+    public async Task NavigateAsync_WhenUrlIsEmpty_FiresOpenSettingsRequestedWithNoCancel()
     {
         var (vm, _, connectivityMock) = CreateSut();
         vm.CurrentUrl = string.Empty;
         bool settingsFired = false;
-        vm.OpenSettingsRequested += () => settingsFired = true;
+        bool? allowCancel = null;
+        vm.OpenSettingsRequested += allow => { settingsFired = true; allowCancel = allow; };
 
         await vm.NavigateAsync();
 
         settingsFired.ShouldBeTrue();
+        allowCancel.ShouldBe(false);
         connectivityMock.Verify(
             c => c.IsReachableAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Never);
@@ -165,15 +169,17 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public void OpenSettingsCommand_FiresOpenSettingsRequestedEvent()
+    public void OpenSettingsCommand_FiresOpenSettingsRequestedWithCancelAllowed()
     {
         var (vm, _, _) = CreateSut();
         bool fired = false;
-        vm.OpenSettingsRequested += () => fired = true;
+        bool? allowCancel = null;
+        vm.OpenSettingsRequested += allow => { fired = true; allowCancel = allow; };
 
         vm.OpenSettingsCommand.Execute(null);
 
         fired.ShouldBeTrue();
+        allowCancel.ShouldBe(true);
     }
 
     [Fact]

@@ -142,7 +142,7 @@ public class SettingsViewModelTests
     }
 
     [Fact]
-    public void CancelCommand_FiresCancelledEvent_WithoutSaving()
+    public void CancelCommand_WhenAllowCancel_FiresCancelledEvent_WithoutSaving()
     {
         var (vm, settingsMock) = CreateSut();
         bool cancelled = false;
@@ -152,6 +152,75 @@ public class SettingsViewModelTests
 
         cancelled.ShouldBeTrue();
         settingsMock.Verify(s => s.Save(It.IsAny<AppSettings>()), Times.Never);
+    }
+
+    [Fact]
+    public void CancelCommand_WhenDisallowCancel_FiresExitRequestedNotCancelled()
+    {
+        var settingsMock = new Mock<ISettingsService>();
+        settingsMock.Setup(s => s.Load()).Returns(new AppSettings());
+        var vm = new SettingsViewModel(settingsMock.Object, allowCancel: false);
+        bool exitFired = false;
+        bool cancelFired = false;
+        vm.ExitRequested += () => exitFired = true;
+        vm.Cancelled += () => cancelFired = true;
+
+        vm.CancelCommand.Execute(null);
+
+        exitFired.ShouldBeTrue();
+        cancelFired.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void AllowCancel_DefaultsToTrue()
+    {
+        var (vm, _) = CreateSut();
+
+        vm.AllowCancel.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void AllowCancel_WhenPassedFalse_IsFalse()
+    {
+        var settingsMock = new Mock<ISettingsService>();
+        settingsMock.Setup(s => s.Load()).Returns(new AppSettings());
+        var vm = new SettingsViewModel(settingsMock.Object, allowCancel: false);
+
+        vm.AllowCancel.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void SecondaryButtonText_WhenAllowCancel_ReturnsCancel()
+    {
+        var (vm, _) = CreateSut();
+
+        vm.SecondaryButtonText.ShouldBe("Cancel");
+    }
+
+    [Fact]
+    public void SecondaryButtonText_WhenDisallowCancel_ReturnsExitApplication()
+    {
+        var settingsMock = new Mock<ISettingsService>();
+        settingsMock.Setup(s => s.Load()).Returns(new AppSettings());
+        var vm = new SettingsViewModel(settingsMock.Object, allowCancel: false);
+
+        vm.SecondaryButtonText.ShouldBe("Exit Application");
+    }
+
+    [Fact]
+    public void Save_PreservesLicenseAcceptedFromCurrentSettings()
+    {
+        var settingsMock = new Mock<ISettingsService>();
+        settingsMock.Setup(s => s.Load()).Returns(
+            new AppSettings { Url = "https://old.com", LicenseAccepted = true });
+        var vm = new SettingsViewModel(settingsMock.Object);
+        vm.Url = "https://new.com";
+
+        vm.SaveCommand.Execute(null);
+
+        settingsMock.Verify(
+            s => s.Save(It.Is<AppSettings>(a => a.LicenseAccepted == true && a.Url == "https://new.com")),
+            Times.Once);
     }
 
     [Fact]

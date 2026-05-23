@@ -1,0 +1,49 @@
+<Window x:Class="SATUI.Views.LicenseDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="License Agreement"
+        Width="620" Height="520"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource AppBackground}">
+
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="📜  License Agreement" FontSize="20" FontWeight="SemiBold"
+                   Foreground="{DynamicResource AppText}" Margin="0,0,0,16"/>
+
+        <!-- License Text -->
+        <Border Grid.Row="1" Background="{DynamicResource AppSurface}" CornerRadius="6"
+                Padding="14,10" Margin="0,0,0,12">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBlock Text="{Binding LicenseText}"
+                           FontSize="12" Foreground="{DynamicResource AppTextSubtle}"
+                           TextWrapping="Wrap" FontFamily="Consolas"
+                           LineHeight="18"/>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Instruction -->
+        <TextBlock Grid.Row="2" FontSize="12" Foreground="{DynamicResource AppTextMuted}"
+                   TextWrapping="Wrap" Margin="0,0,0,16">
+            You must accept this agreement to use SATUI. Declining will exit the application.
+        </TextBlock>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Decline" Command="{Binding DeclineCommand}"
+                    Width="100" Height="34" Margin="0,0,10,0"
+                    Style="{StaticResource SecondaryButton}"/>
+            <Button Content="I Accept" Command="{Binding AcceptCommand}"
+                    Width="100" Height="34"
+                    Style="{StaticResource PrimaryButton}"/>
+        </StackPanel>
+    </Grid>
+</Window>

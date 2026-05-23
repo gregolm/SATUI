@@ -8,22 +8,31 @@ namespace SATUI.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly ISettingsService _settingsService;
+    private AppSettings _currentSettings;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _url = string.Empty;
 
+    public bool AllowCancel { get; }
+
+    public string SecondaryButtonText => AllowCancel ? "Cancel" : "Exit Application";
+
     // Raised when settings are saved (passes new settings to caller)
     public event Action<AppSettings>? SettingsSaved;
 
-    // Raised when user cancels
+    // Raised when user cancels (only when AllowCancel = true)
     public event Action? Cancelled;
 
-    public SettingsViewModel(ISettingsService settingsService)
+    // Raised when user exits (only when AllowCancel = false)
+    public event Action? ExitRequested;
+
+    public SettingsViewModel(ISettingsService settingsService, bool allowCancel = true)
     {
         _settingsService = settingsService;
-        var settings = _settingsService.Load();
-        _url = settings.Url;
+        AllowCancel = allowCancel;
+        _currentSettings = _settingsService.Load();
+        _url = _currentSettings.Url;
     }
 
     public string? UrlValidationError => UrlNormalizer.Validate(Url);
@@ -39,15 +48,18 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(IsValid))]
     public void Save()
     {
-        var settings = new AppSettings { Url = Url.Trim() };
-        _settingsService.Save(settings);
-        SettingsSaved?.Invoke(settings);
+        _currentSettings.Url = Url.Trim();
+        _settingsService.Save(_currentSettings);
+        SettingsSaved?.Invoke(_currentSettings);
     }
 
     [RelayCommand]
     public void Cancel()
     {
-        Cancelled?.Invoke();
+        if (AllowCancel)
+            Cancelled?.Invoke();
+        else
+            ExitRequested?.Invoke();
     }
 
     partial void OnUrlChanged(string value)
@@ -59,3 +71,4 @@ public partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(HasUrlHint));
     }
 }
+

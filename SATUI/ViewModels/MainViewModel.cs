@@ -25,8 +25,8 @@ public partial class MainViewModel : ObservableObject
     /// <summary>Raised when WebView2 should navigate to a URL.</summary>
     public event Action<string>? NavigationRequested;
 
-    /// <summary>Raised when the Settings dialog should be opened.</summary>
-    public event Action? OpenSettingsRequested;
+    /// <summary>Raised when the Settings dialog should be opened. Arg = whether cancel is allowed.</summary>
+    public event Action<bool>? OpenSettingsRequested;
 
     /// <summary>
     /// Raised when a connection attempt fails. The argument is the URL that was attempted,
@@ -47,8 +47,8 @@ public partial class MainViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(CurrentUrl))
         {
-            // No URL configured (e.g. first run) — go straight to Settings
-            OpenSettingsRequested?.Invoke();
+            // No URL configured (e.g. first run) — go straight to Settings, no cancel allowed
+            OpenSettingsRequested?.Invoke(false);
             return;
         }
 
@@ -60,7 +60,7 @@ public partial class MainViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(CurrentUrl))
         {
-            OpenSettingsRequested?.Invoke();
+            OpenSettingsRequested?.Invoke(false);
             return;
         }
 
@@ -87,7 +87,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public void OpenSettings()
     {
-        OpenSettingsRequested?.Invoke();
+        OpenSettingsRequested?.Invoke(true);
     }
 
     /// <summary>Called by the UI when WebView2 reports a navigation failure.</summary>
